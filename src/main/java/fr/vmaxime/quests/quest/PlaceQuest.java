@@ -17,7 +17,7 @@ public class PlaceQuest extends Quest {
             return;
 
         Player player = event.getPlayer();
-        setProgression(player.getUniqueId(), getProgression(player.getUniqueId()) + 1);
+        addProgression(player.getUniqueId(), 1);
 
     }
 

@@ -25,7 +25,7 @@ public class QuestsDatabase {
             try {
                 statement.execute(
                         "CREATE TABLE IF NOT EXISTS " + quest.getType().name().toLowerCase(Locale.ROOT) +
-                            "(" + "player VARCHAR(32) PRIMARY KEY," + "progression INTEGER" + ")"
+                            "(" + "player VARCHAR(64) PRIMARY KEY," + "progression INTEGER NOT NULL" + ")"
                 );
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -57,7 +57,9 @@ public class QuestsDatabase {
      */
     public int getProgression(UUID uuid, QuestType type) {
         try {
-            ResultSet rs = statement.executeQuery("SELECT `progression` FROM `" + type.name().toLowerCase(Locale.ROOT) + "` WHERE player=`" + uuid.toString() + "`");
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM " + type.name().toLowerCase(Locale.ROOT) + " WHERE player=?");
+            ps.setString(1, uuid.toString());
+            ResultSet rs = ps.executeQuery();
             if (rs.next())
                 return rs.getInt("progression");
             else
@@ -76,7 +78,7 @@ public class QuestsDatabase {
      */
     public void setProgression(UUID uuid, QuestType type, int progression) {
         try {
-            statement.executeUpdate("INSERT INTO `" + type.name().toLowerCase(Locale.ROOT) + "` (player, progression) VALUES(`" + uuid.toString() +  "`, " + progression + ") ON DUPLICATE KEY UPDATE progression=" + progression);
+            statement.executeUpdate("INSERT INTO " + type.name().toLowerCase(Locale.ROOT) + " (player, progression) VALUES('" + uuid.toString() +  "', " + progression + ") ON DUPLICATE KEY UPDATE progression=" + progression);
         } catch (SQLException e) {
             e.printStackTrace();
         }

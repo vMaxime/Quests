@@ -18,7 +18,8 @@ public class WalkQuest extends Quest {
             return;
 
         Player player = event.getPlayer();
-        setProgression(player.getUniqueId(), getBlocksTraveled(player));
+        if (event.getFrom().getBlock().getLocation().distanceSquared(event.getTo().getBlock().getLocation()) >= 1)
+            addProgression(player.getUniqueId(), 1);
     }
 
     /**

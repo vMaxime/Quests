@@ -22,7 +22,7 @@ public class KillMobsQuest extends Quest {
             return;
 
         Player player = (Player) event.getDamager();
-        setProgression(player.getUniqueId(), getProgression(player.getUniqueId()) + 1);
+        addProgression(player.getUniqueId(), 1);
 
     }
 

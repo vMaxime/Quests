@@ -1,4 +1,5 @@
 main: fr.vmaxime.quests.Quests
+api-version: 1.17
 name: Quests
 version: 1.0
 author: vMaxime

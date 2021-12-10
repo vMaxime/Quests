@@ -83,7 +83,7 @@ public abstract class Quest implements Listener {
      * @param amount Amount we want to add to the player progression
      */
     public void addProgression(UUID uuid, int amount) {
-        progressions.put(uuid, getProgression(uuid) + amount);
+        setProgression(uuid, getProgression(uuid) + amount);
     }
 
     /**

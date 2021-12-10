@@ -10,53 +10,53 @@
 
 walk:
   100:
-    message: "&6[Quests] &aYou walked &e100&a blocks!"
-    sound: "ORB_PICKUP"
+    message: "&6The quest &aWalk 100 blocks &6has been completed!"
+    sound: "ENTITY_EXPERIENCE_ORB_PICKUP"
     commands:
       - "eco give @player 1000"
       - "give @player stone 128"
   500:
-    message: "&6[Quests] &aYou walked &e500&a blocks!"
-    sound: "ORB_PICKUP"
+    message: "&6The quest &aWalk 500 blocks &6has been completed!"
+    sound: "ENTITY_EXPERIENCE_ORB_PICKUP"
     commands:
       - "eco give @player 5000"
       - "give @player stone 256"
 break:
   64:
-    message: "&6[Quests] &aYou broke &e64&a blocks!"
-    sound: "ORB_PICKUP"
+    message: "&6The quest &aBreak 64 blocks &6has been completed!"
+    sound: "ENTITY_EXPERIENCE_ORB_PICKUP"
     commands:
       - "eco give @player 1000"
       - "give @player diamond_ore 1"
   320:
-    message: "&6[Quests] &aYou broke &e320&a blocks!"
-    sound: "ORB_PICKUP"
+    message: "&6The quest &aBreak 320 blocks &6has been completed!"
+    sound: "ENTITY_EXPERIENCE_ORB_PICKUP"
     commands:
       - "eco give @player 5000"
       - "give @player diamond_ore 5"
 place:
   64:
-    message: "&6[Quests] &aYou placed &e64&a blocks!"
-    sound: "ORB_PICKUP"
+    message: "&6The quest &aPlace 64 blocks &6has been completed!"
+    sound: "ENTITY_EXPERIENCE_ORB_PICKUP"
     commands:
       - "eco give @player 1000"
       - "give @player diamond_ore 1"
   320:
-    message: "&6[Quests] &aYou placed &e320&a blocks!"
-    sound: "ORB_PICKUP"
+    message: "&6The quest &aPlace 320 blocks &6has been completed!"
+    sound: "ENTITY_EXPERIENCE_ORB_PICKUP"
     commands:
       - "eco give @player 5000"
       - "give @player diamond_ore 5"
 kill_mobs:
   10:
-    message: "&6[Quests] &aYou killed &e10&a mobs!"
-    sound: "ORB_PICKUP"
+    message: "&6The quest &aKill 10 mobs &6has been completed!"
+    sound: "ENTITY_EXPERIENCE_ORB_PICKUP"
     commands:
       - "eco give @player 1000"
       - "give @player diamond_ore 1"
   100:
-    message: "&6[Quests] &aYou broke &e100&a mobs!"
-    sound: "ORB_PICKUP"
+    message: "&6The quest &aKill 100 mobs &6has been completed!"
+    sound: "ENTITY_EXPERIENCE_ORB_PICKUP"
     commands:
       - "eco give @player 10000"
       - "give @player diamond_ore 5"

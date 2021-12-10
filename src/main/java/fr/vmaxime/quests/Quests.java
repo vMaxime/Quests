@@ -41,13 +41,6 @@ public class Quests extends JavaPlugin {
         questsConfiguration = new Configuration(this, "quests");
         questsConfiguration.saveDefaultConfig();
 
-        // DATABASE
-        database = new QuestsDatabase(getConfig().getString("host"), getConfig().getInt("port"), getConfig().getString("database"), getConfig().getString("username"), getConfig().getString("password"));
-        if (database.getConnection() == null) {
-            getServer().getPluginManager().disablePlugin(this);
-            return;
-        }
-
         // QUESTS
         quests = new ArrayList<>();
         for (QuestType questType : QuestType.values()) {
@@ -59,6 +52,13 @@ public class Quests extends JavaPlugin {
         }
         loadQuests();
 
+        // DATABASE
+        database = new QuestsDatabase(getConfig().getString("host"), getConfig().getInt("port"), getConfig().getString("database"), getConfig().getString("username"), getConfig().getString("password"));
+        if (database.getConnection() == null) {
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+
         // load online players quests progressions
         Bukkit.getOnlinePlayers().forEach(player -> loadProgressions(player.getUniqueId()));
 
@@ -69,7 +69,7 @@ public class Quests extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        if (database.getConnection() != null) {
+        if (database != null && database.getConnection() != null) {
             Bukkit.getOnlinePlayers().forEach(player -> saveProgressions(player.getUniqueId()));
             try {
                 database.getConnection().close();
@@ -109,7 +109,7 @@ public class Quests extends JavaPlugin {
                 int objectiveAmount = Integer.parseInt(objectiveAmountStr);
                 String message = config.getString(key + "." + objectiveAmountStr + ".message");
                 Sound sound = Sound.valueOf(config.getString(key + "." + objectiveAmountStr + ".sound", null));
-                List<String> commands = config.getStringList(key + "." + objectiveAmountStr + ".command");
+                List<String> commands = config.getStringList(key + "." + objectiveAmountStr + ".commands");
                 quest.addObjective(new QuestObjective(objectiveAmount, message, sound, commands));
             });
         });
