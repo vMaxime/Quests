@@ -1,5 +1,6 @@
 package fr.vmaxime.quests.quest;
 
+import fr.vmaxime.quests.Quests;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -54,27 +55,29 @@ public abstract class Quest implements Listener {
     }
 
     /**
-     * Sets progression of a player from his unique id
+     * Sets progression of a player from his unique id and completes objectives if the player is already registered
      * @param uuid Unique id of the player
      * @param value Integer of the new player progression
      */
     public void setProgression(UUID uuid, int value) {
-        progressions.put(uuid, value);
-        getObjectives().forEach(objective -> {
-            // if progression reaches an objective amount
-            if (objective.getAmount() == value) {
-                OfflinePlayer ofPlayer = Bukkit.getOfflinePlayer(uuid);
-                // play sound & send message
-                if (ofPlayer.isOnline()) {
-                    Player player = ofPlayer.getPlayer();
-                    if (objective.getSound() != null)
-                        player.playSound(player.getLocation(), objective.getSound(), 2f, 2f);
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', objective.getMessage()));
+        if (progressions.containsKey(uuid)) {
+            Bukkit.getScheduler().runTask(Quests.getInstance(), () -> getObjectives().forEach(objective -> {
+                // if progression reaches an objective amount
+                if (objective.getAmount() == value) {
+                    OfflinePlayer ofPlayer = Bukkit.getOfflinePlayer(uuid);
+                    // play sound & send message
+                    if (ofPlayer.isOnline()) {
+                        Player player = ofPlayer.getPlayer();
+                        if (objective.getSound() != null)
+                            player.playSound(player.getLocation(), objective.getSound(), 2f, 2f);
+                        player.sendMessage(ChatColor.translateAlternateColorCodes('&', objective.getMessage()));
+                    }
+                    // execute commands
+                    objective.getCommands().forEach(command -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command.replace("@player", ofPlayer.getName())));
                 }
-                // execute commands
-                objective.getCommands().forEach(command -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command.replace("@player", ofPlayer.getName())));
-            }
-        });
+            }));
+        }
+        progressions.put(uuid, value);
     }
 
     /**

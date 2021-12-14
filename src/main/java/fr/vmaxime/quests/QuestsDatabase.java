@@ -10,16 +10,14 @@ public class QuestsDatabase {
 
     private Connection connection;
     private Statement statement;
+    private final String url, username, password;
 
     public QuestsDatabase(String host, int port, String database, String username, String password) {
-        String url = "jdbc:mysql://" + host + ":" + port + "/" + database;
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            connection = DriverManager.getConnection(url, username, password);
-            statement = connection.createStatement();
-        } catch (Exception e){
-            e.printStackTrace();
-        }
+        this.url = "jdbc:mysql://" + host + ":" + port + "/" + database;
+        this.username = username;
+        this.password = password;
+        // open connection
+        openConnection();
         // create default tables for quests
         Quests.getInstance().getQuests().forEach(quest -> {
             try {
@@ -31,6 +29,7 @@ public class QuestsDatabase {
                 e.printStackTrace();
             }
         });
+        closeConnection();
     }
 
     /**
@@ -42,11 +41,41 @@ public class QuestsDatabase {
     }
 
     /**
-     * Gets the connection statement
-     * @return Statement of the connection or null
+     * Open the connection
      */
-    public Statement getStatement() {
-        return statement;
+    public void openConnection() {
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            connection = DriverManager.getConnection(url, username, password);
+            statement = connection.createStatement();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Closes the connection
+     */
+    public void closeConnection() {
+        try {
+            connection.close();
+            statement = null;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Checks if the connection is closed
+     * @return True if the connection is closed, False if opened
+     */
+    public boolean isConnectionClosed() {
+        try {
+            return connection != null && connection.isClosed();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return true;
     }
 
     /**

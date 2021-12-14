@@ -10,7 +10,6 @@ import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -54,7 +53,7 @@ public class Quests extends JavaPlugin {
 
         // DATABASE
         database = new QuestsDatabase(getConfig().getString("host"), getConfig().getInt("port"), getConfig().getString("database"), getConfig().getString("username"), getConfig().getString("password"));
-        if (database.getConnection() == null) {
+        if (database.getConnection() == null && !database.isConnectionClosed()) {
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
@@ -69,14 +68,8 @@ public class Quests extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        if (database != null && database.getConnection() != null) {
+        if (database != null && !database.isConnectionClosed())
             Bukkit.getOnlinePlayers().forEach(player -> saveProgressions(player.getUniqueId()));
-            try {
-                database.getConnection().close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     /**
@@ -120,10 +113,14 @@ public class Quests extends JavaPlugin {
      * @param uuid Unique id of the player
      */
     public void loadProgressions(UUID uuid) {
-        getServer().getScheduler().runTaskAsynchronously(this, () -> getQuests().forEach(quest -> {
-            int progression = database.getProgression(uuid, quest.getType());
-            quest.setProgression(uuid, progression);
-        }));
+        getServer().getScheduler().runTaskAsynchronously(this, () -> {
+            database.openConnection();
+            getQuests().forEach(quest -> {
+                int progression = database.getProgression(uuid, quest.getType());
+                quest.setProgression(uuid, progression);
+            });
+            database.closeConnection();
+        });
     }
 
     /**
@@ -132,11 +129,13 @@ public class Quests extends JavaPlugin {
      * @param uuid Unique id of the player
      */
     public void saveProgressions(UUID uuid) {
+        database.openConnection();
         getQuests().forEach(quest -> {
             int progression = quest.getProgression(uuid);
             database.setProgression(uuid, quest.getType(), progression);
             quest.removeProgression(uuid);
         });
+        database.closeConnection();
     }
 
 }
